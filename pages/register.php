@@ -17,7 +17,7 @@ function validateSex($sex)
 	if($sex == 0) return 0;
 	if($sex == 1) return 1;
 	if($sex == 2) return 2;
-	
+
 	return 2;
 }
 
@@ -42,7 +42,7 @@ if(isset($_POST['name']))
 	//This makes testing faster.
 	if($_SERVER['REMOTE_ADDR'] == "127.0.0.1")
 		$ipKnown = 0;
-		
+
 	if($uname == $cname)
 		$err = __("This user name is already taken. Please choose another.");
 	else if($name == "" || $cname == "")
@@ -67,19 +67,18 @@ if(isset($_POST['name']))
 	}
 	else
 	{
-		$newsalt = Shake();
-		$sha = doHash($_POST['pass'].$salt.$newsalt);
+		$password = password_hash($_POST['pass'], PASSWORD_DEFAULT);
 
 		$sex = validateSex($_POST["sex"]);
-		$rUsers = Query("insert into {users} (name, password, pss, regdate, lastactivity, lastip, email, sex, theme) values ({0}, {1}, {2}, {3}, {3}, {4}, {5}, {6}, {7})", $_POST['name'], $sha, $newsalt, time(), $_SERVER['REMOTE_ADDR'], $_POST['email'], $sex, Settings::get("defaultTheme"));
-		
+		$rUsers = Query("insert into {users} (name, password, regdate, lastactivity, lastip, email, sex, theme) values ({0}, {1}, {2}, {3}, {3}, {4}, {5}, {6})", $_POST['name'], $password, time(), $_SERVER['REMOTE_ADDR'], $_POST['email'], $sex, Settings::get("defaultTheme"));
+
 		$uid = insertId();
-		
+
 		if($uid == 1)
 			Query("update {users} set powerlevel = 4 where id = 1");
 
 		recalculateKarma($uid);
-		
+
 		logAction('register', array('user' => $uid));
 
 		$user = Fetch(Query("select * from {users} where id={0}", $uid));

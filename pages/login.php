@@ -6,8 +6,31 @@ function validateConvertPassword($pass, $hash, $salt, $type)
 {
 	if($type == "IPB")
 		return $hash === md5(md5($salt).md5($pass));
-		
+
 	return false;
+}
+
+// This is needed to keep up to date with new hashing settings.
+// From https://gist.github.com/nikic/3707231#rehashing-passwords
+function isValidPassword($password, $hash, $uid) {
+    if (!password_verify($password, $hash)) {
+        return false;
+    }
+
+    if (password_needs_rehash($hash, PASSWORD_DEFAULT)) {
+        $hash = password_hash($password, PASSWORD_DEFAULT);
+
+        Query('UPDATE
+        			{users}
+        		SET
+        			password = {0}
+        		WHERE
+        			id = {1}',
+        	$hash, $uid
+        );
+    }
+
+    return true;
 }
 
 $crumbs = new PipeMenu();
@@ -28,7 +51,16 @@ elseif(isset($_POST['actionlogin']))
 	$okay = false;
 	$pass = $_POST['pass'];
 
-	$user = Fetch(Query("select * from {users} where name={0}", $_POST['name']));
+	$user = Fetch(Query("SELECT
+							id, password, pss, convertpassword,
+							convertpasswordsalt, convertpasswordtype
+						FROM
+							{users}
+						WHERE
+							name = {0}",
+				$_POST['name']
+			));
+
 	if($user)
 	{
 		//Find out if the user has a legacy password stored.
@@ -38,10 +70,9 @@ elseif(isset($_POST['actionlogin']))
 			if(validateConvertPassword($pass, $user["convertpassword"], $user["convertpasswordsalt"], $user["convertpasswordtype"]))
 			{
 				//If the user has entered password correctly, upgrade it to ABXD hash and wipe the legacy hash.
-				$newsalt = Shake();
-				$sha = doHash($pass.$salt.$newsalt);
-				query("UPDATE {users} SET convertpassword='', convertpasswordsalt='', convertpasswordtype='', password={0}, pss={1} WHERE id={2}", $sha, $newsalt, $user["id"]);
-				
+				$password = password_hash($pass, PASSWORD_DEFAULT);
+				query("UPDATE {users} SET convertpassword='', convertpasswordsalt='', convertpasswordtype='', password={0} WHERE id={1}", $password, $user["id"]);
+
 				//Login successful.
 				$okay = true;
 			}
@@ -49,9 +80,20 @@ elseif(isset($_POST['actionlogin']))
 		else
 		{
 			//No legacy password, check regular ABXD hash.
-			$sha = doHash($pass.$salt.$user['pss']);
-			if($user['password'] == $sha)
+			if (isValidPassword($pass, $user['password'], $user['id'])) {
 				$okay = true;
+			}
+			if (!$okay && (doHash($pass.$salt.$user['pss']) == $user['password'])) {
+				$password = password_hash($pass, PASSWORD_DEFAULT);
+				Query('UPDATE
+							{users}
+						SET
+							password = {0},
+							pss = \'\'',
+					$password
+				);
+				$okay = true;
+			}
 		}
 
 		if(!$okay)
