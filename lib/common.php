@@ -73,7 +73,7 @@ include("loguser.php");
 include("permissions.php");
 include("ranksets.php");
 include("post.php");
-include("log.php");
+include("logs.php");
 include("onlineusers.php");
 
 include("htmlfilter.php");
