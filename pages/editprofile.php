@@ -293,7 +293,7 @@ $layout = array(
 );
 
 //Allow plugins to add their own fields
-$bucket = "edituser"; include("lib/pluginloader.php");
+$bucket = "edituser"; include(LIBDIR . '/pluginloader.php');
 
 //Make some more checks.
 if($user['posts'] < Settings::get("customTitleThreshold") && $user['powerlevel'] < 1 && !$editUserMode)

@@ -2,11 +2,14 @@
 // Protect from <iframe> password steal hack
 header('X-Frame-Options: DENY');
 
+// Set current dir for require stuff
+define('COMMONDIR', dirname(__FILE__));
+
 $ajaxPage = false;
 if(isset($_GET["ajax"]))
 	$ajaxPage = true;
 
-require('lib/common.php');
+require_once(COMMONDIR . '/lib/common.php');
 
 //TODO: Put this in a proper place.
 function getBirthdaysText()
@@ -30,7 +33,7 @@ function getBirthdaysText()
 		return "";
 }
 
-//Use buffering to draw the page. 
+//Use buffering to draw the page.
 //Useful to have it disabled when running from the terminal.
 $useBuffering = true;
 
@@ -39,10 +42,10 @@ if(isset($argv))
 {
 	$_GET = array();
 	$_GET["page"] = $argv[1];
-	
+
 	$_SERVER = array();
 	$_SERVER["REMOTE_ADDR"] = "0.0.0.0";
-	
+
 	$ajaxPage = true;
 	$useBuffering = false;
 }
@@ -84,17 +87,17 @@ try {
 			$plugin = $pluginpages[$page];
 			$self = $plugins[$plugin];
 
-			$page = "./plugins/".$self['dir']."/page_".$page.".php";
+			$page = COMMONDIR . "/plugins/".$self['dir']."/page_".$page.".php";
 			if(!file_exists($page))
 				throw new Exception(404);
-			include($page);
+			require_once($page);
 			unset($self);
 		}
 		else {
-			$page = 'pages/'.$page.'.php';
+			$page = COMMONDIR . '/pages/'.$page.'.php';
 			if(!file_exists($page))
 				throw new Exception(404);
-			include($page);
+			require_once($page);
 		}
 	}
 	catch(Exception $e)
@@ -103,7 +106,7 @@ try {
 		{
 			throw $e;
 		}
-		require('pages/404.php');
+		require_once(COMMONDIR . '/pages/404.php');
 	}
 }
 catch(KillException $e)
@@ -113,13 +116,13 @@ catch(KillException $e)
 
 if($ajaxPage)
 {
-	
+
 	if($useBuffering)
 	{
 		header("Content-Type: text/plain");
 		ob_end_flush();
 	}
-		
+
 	die();
 }
 
@@ -127,17 +130,17 @@ $layout_contents = ob_get_contents();
 ob_end_clean();
 
 //Do these things only if it's not an ajax page.
-include("lib/views.php");
+require_once(LIBDIR . '/views.php');
 setLastActivity();
 
 //=======================
 // Panels and footer
 
-require('navigation.php');
-require('userpanel.php');
+require_once(COMMONDIR . '/navigation.php');
+require_once(COMMONDIR . '/userpanel.php');
 
 ob_start();
-require('footer.php');
+require_once(COMMONDIR . '/footer.php');
 $layout_footer = ob_get_contents();
 ob_end_clean();
 
@@ -147,7 +150,7 @@ ob_end_clean();
 
 ob_start();
 
-$bucket = "userBar"; include("./lib/pluginloader.php");
+$bucket = "userBar"; include(LIBDIR . '/pluginloader.php');
 /*
 if($rssBar)
 {
@@ -159,7 +162,7 @@ if($rssBar)
 ", $rssBar, $rssWidth + 4);
 }*/
 DoPrivateMessageBar();
-$bucket = "topBar"; include("./lib/pluginloader.php");
+$bucket = "topBar"; include(LIBDIR . '/pluginloader.php');
 $layout_bars = ob_get_contents();
 ob_end_clean();
 
@@ -255,11 +258,11 @@ if($debugQueries)
 
 if($mobileLayout)
 	$layout = "mobile";
-if(!file_exists("layouts/$layout/layout.php"))
+if(!file_exists(COMMONDIR . '/layouts/' . $layout . '/layout.php'))
 	$layout = "abxd";
-require("layouts/$layout/layout.php"); echo (isset($times) ? $times : "");
+require_once(COMMONDIR . '/layouts/' . $layout . '/layout.php'); echo (isset($times) ? $times : "");
 
-$bucket = "finish"; include('lib/pluginloader.php');
+$bucket = "finish"; include(LIBDIR . '/pluginloader.php');
 
 ?>
 

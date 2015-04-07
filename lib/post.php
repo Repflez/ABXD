@@ -1,7 +1,7 @@
 <?php
 //  AcmlmBoard XD support - Post functions
 
-include_once("write.php");
+require_once(LIBDIR . '/write.php');
 
 
 function ParseThreadTags($title)
@@ -51,7 +51,7 @@ function loadBlockLayouts()
 
 function getSyndrome($activity)
 {
-	include("syndromes.php");
+	require_once(LIBDIR . '/syndromes.php');
 	$soFar = "";
 	foreach($syndromes as $minAct => $syndrome)
 		if($activity >= $minAct)
@@ -119,7 +119,7 @@ function makePostText($post)
 		"date" => formatdate($post['date']),
 		"rank" => GetRank($poster["rankset"], $poster["posts"]),
 	);
-	$bucket = "amperTags"; include("./lib/pluginloader.php");
+	$bucket = "amperTags"; include(LIBDIR . '/pluginloader.php');
 
 	$postText = $post['text'];
 	$postText = ApplyTags($postText, $tags);
@@ -207,7 +207,7 @@ function makePostLinks($post, $type, $params=array())
 				$links->add(new PipeMenuTextEntry($post['ip']));
 		}
 
-		$bucket = "topbar"; include("./lib/pluginloader.php");
+		$bucket = "topbar"; include(LIBDIR . '/pluginloader.php');
 	}
 
 	return $links;
@@ -232,7 +232,7 @@ function makePost($post, $type, $params=array())
 	$isBlocked = $poster['globalblock'] || $loguser['blocklayouts'] || $post['options'] & 1 || isset($blocklayouts[$poster['id']]);
 
 	$links = makePostLinks($post, $type, $params);
-	
+
 	if($post['deleted'] && $type == POST_NORMAL)
 	{
 		$meta = format(__("Posted on {0}"), formatdate($post['date']));
@@ -245,7 +245,7 @@ function makePost($post, $type, $params=array())
 			if ($post['reason'])
 				$meta .= ': '.htmlspecialchars($post['reason']);
 		}
-		
+
 		if($mobileLayout)
 		{
 			$links->setClass("toolbarMenu");
@@ -309,7 +309,7 @@ function makePost($post, $type, $params=array())
 		$thread = $params['tid'];
 		$canMod = CanMod($loguserid, $forum);
 		$canReply = ($canMod || (!$post['closed'] && $loguser['powerlevel'] > -1)) && $loguserid;
-		
+
 		if ($type == POST_PM)
 			$message = __("Sent on {0}");
 		else
@@ -362,7 +362,7 @@ function makePost($post, $type, $params=array())
 	$sideBarStuff .= GetSyndrome(getActivity($poster["id"]));
 
 	$pictureUrl = "";
-	
+
 	if($post['mood'] > 0)
 	{
 		if(file_exists("${dataDir}avatars/".$poster['id']."_".$post['mood']))
@@ -391,7 +391,7 @@ function makePost($post, $type, $params=array())
 
 	$sideBarStuff .= "<br />\n".__("Since:")." ".cdate($loguser['dateformat'], $poster['regdate'])."<br />";
 
-	$bucket = "sidebar"; include("./lib/pluginloader.php");
+	$bucket = "sidebar"; include(LIBDIR . '/pluginloader.php');
 
 	if(Settings::get("showExtraSidebar"))
 	{
@@ -430,7 +430,7 @@ function makePost($post, $type, $params=array())
 			$picture = "<img src=\"".htmlspecialchars($pictureUrl)."\" alt=\"\" style=\"max-width: 40px; max-height: 40px;\"/>";
 		else
 			$picture = "";
-		
+
 		echo "
 				<table class=\"outline margin mobile-postBox\" id=\"post${post['id']}\">
 				<tr class=\"header0 mobile-postHeader\">

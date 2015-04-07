@@ -14,7 +14,7 @@ print "<br />";
 print "<br />";
 print "<b>".__("Reason")."</b>: ".htmlspecialchars($ipban['reason']);
 print "<br />";
-$bucket = "ipbanned"; include('lib/pluginloader.php');
+$bucket = "ipbanned"; include(LIBDIR . '/pluginloader.php');
 ?>
 
 </td></tr></table>

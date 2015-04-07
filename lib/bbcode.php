@@ -77,7 +77,7 @@ $bbcode = array(
 );
 
 //Allow plugins to register their own callbacks (new bbcode tags)
-$bucket = "bbcode"; include("pluginloader.php");
+$bucket = "bbcode"; include(LIBDIR . '/pluginloader.php');
 
 function bbcodeAppend($dom, $nodes)
 {

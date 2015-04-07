@@ -133,7 +133,7 @@ function AssertForbidden($to, $specifically = 0)
 			"makeReply" => __("reply in this thread"),
 			"editUser" => __("edit this user"),
 		);
-		$bucket = "forbiddens"; include("./lib/pluginloader.php");
+		$bucket = "forbiddens"; include(LIBDIR . '/pluginloader.php');
 		if($caught == 2 && array_key_exists($to, $messages2))
 			Kill(format($not, $messages2[$to]), __("Permission denied."));
 		Kill(format($not, $messages[$to]), __("Permission denied."));

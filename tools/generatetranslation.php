@@ -4,6 +4,7 @@ if (php_sapi_name() !== 'cli')
 	die("This script is only intended for CLI usage.\n");
 }
 
+define('LIBDIR', dirname(__FILE__));
 // Generator for en_US language file
 function find_strings($tokens, $filename)
 {
@@ -46,14 +47,14 @@ function find_strings($tokens, $filename)
 	}
 }
 
-require 'lib/recursivetokenizer.php';
+require_once(LIBDIR . '/recursivetokenizer.php');
 
 if(!isset($argv[1]))
 	die("Usage: generatetranslation.php <langName>|all\n");
 
 if($argv[1] == "all")
 {
-	if ($handle = opendir('../lib/lang/')) {
+	if ($handle = opendir(LIBDIR . '/lang/')) {
 		while (false !== ($entry = readdir($handle)))
 		{
 			if(preg_match("/^(.*)_lang\\.php$/", $entry, $matches))
@@ -79,9 +80,9 @@ function updateLanguage($lang)
 	$messages = array();
 
 	$languagePack = array();
-	$langFile = "../lib/lang/".$lang."_lang.php";
+	$langFile = LIBDIR . '/lang/' . $lang . '_lang.php';
 	if(file_exists($langFile))
-		include $langFile;
+		require_once($langFile);
 
 	echo "<?php\n\$languagePack = array(\n";
 

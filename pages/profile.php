@@ -230,7 +230,7 @@ if(NumRows($badgersR))
 	$profileParts['General information']['Badges'] = $badgers;
 }
 
-$bucket = "profileTable"; include("./lib/pluginloader.php");
+$bucket = "profileTable"; include(LIBDIR . '/pluginloader.php');
 
 if(!$mobileLayout)
 	echo "
@@ -271,7 +271,7 @@ write("
 				</table>
 ");
 
-$bucket = "profileLeft"; include("./lib/pluginloader.php");
+$bucket = "profileLeft"; include(LIBDIR . '/pluginloader.php');
 
 if(!$mobileLayout)
 {
@@ -280,7 +280,7 @@ if(!$mobileLayout)
 				<td style=\"vertical-align: top; border: 0px none;\">
 	");
 
-	include("usercomments.php");
+	require_once(COMMONDIR . '/pages/usercomments.php');
 
 	print "
 				</td>

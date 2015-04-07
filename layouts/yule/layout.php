@@ -2,7 +2,7 @@
 <html>
 <head>
 	<title><?php print $layout_title?></title>
-	<?php include("header.php"); ?>
+	<?php include(COMMONDIR . '/header.php'); ?>
 </head>
 
 <body style="width:100%; font-size: <?php print $loguser['fontsize']; ?>%;">

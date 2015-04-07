@@ -6,7 +6,7 @@ $crumbs = new PipeMenu();
 $crumbs->add(new PipeMenuLinkEntry(__("Register"), "register"));
 makeBreadcrumbs($crumbs);
 
-$haveSecurimage = is_file("securimage/securimage.php");
+$haveSecurimage = is_file(LIBDIR . '/securimage/securimage.php');
 if($haveSecurimage)
 	session_start();
 
@@ -55,7 +55,7 @@ if(isset($_POST['name']))
 		$err = __("The passwords you entered don't match.");
 	else if($haveSecurimage)
 	{
-		include("securimage/securimage.php");
+		require_once(LIBDIR . '/securimage/securimage.php');
 		$securimage = new Securimage();
 		if($securimage->check($_POST['captcha_code']) == false)
 			$err = __("You got the CAPTCHA wrong.");
@@ -84,7 +84,7 @@ if(isset($_POST['name']))
 		$user = Fetch(Query("select * from {users} where id={0}", $uid));
 		$user["rawpass"] = $_POST["pass"];
 
-		$bucket = "newuser"; include("lib/pluginloader.php");
+		$bucket = "newuser"; include(LIBDIR . '/pluginloader.php');
 
 		$sessionID = Shake();
 		setcookie("logsession", $sessionID, 0, $boardroot, "", false, true);

@@ -14,7 +14,7 @@ if (isset($pluginbuckets[$bucket]))
 		if (isset($plugins[$plugin]))
 		{
 			$self = $plugins[$plugin];
-			include("./plugins/".$plugins[$plugin]['dir']."/".$bucket.".php");
+			include(COMMONDIR . '/plugins/' . $plugins[$plugin]['dir'] . '/' . $bucket . '.php');
 			unset($self);
 		}
 	}

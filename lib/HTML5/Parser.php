@@ -33,7 +33,7 @@ class HTML5_Parser
         $tokenizer->allowed_tags = $allowedTags;
         $tokenizer->tree->bbcode = $tokenizer->bbcode = $bbcode;
         $tokenizer->userName = $user_name;
-        $bucket = "parserModify"; include("lib/pluginloader.php");
+        $bucket = "parserModify"; include(LIBDIR . '/pluginloader.php');
         $tokenizer->parseFragment($context);
         return $tokenizer->save();
     }

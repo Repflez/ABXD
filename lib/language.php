@@ -11,9 +11,9 @@
 
 $language = Settings::get("defaultLanguage");
 
-include_once("./lib/lang/".$language.".php");
+require_once(LIBDIR . '/lang/' . $language . '.php');
 if($language != "en_US")
-	include_once("./lib/lang/".$language."_lang.php");
+	require_once(LIBDIR . '/lang/' . $language . '_lang.php');
 
 function __($english, $flags = 0)
 {

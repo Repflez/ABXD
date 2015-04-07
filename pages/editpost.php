@@ -115,7 +115,7 @@ else if(isset($_POST['actionpost']))
 
 	if(!$rejected)
 	{
-		$bucket = "checkPost"; include("./lib/pluginloader.php");
+		$bucket = "checkPost"; include(LIBDIR . '/pluginloader.php');
 	}
 
 	if(!$rejected)

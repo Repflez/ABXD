@@ -3,7 +3,7 @@ if (php_sapi_name() !== 'cli')
 {
 	die("This script is only intended for CLI usage.\n");
 }
-include("../language.php");
+require_once("../language.php");
 
 $langnames = array("nl_NL", "es_ES", "pl_PL");
 $langs = array();

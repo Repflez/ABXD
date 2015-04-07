@@ -3,7 +3,7 @@
 function makeForumListing($parent)
 {
 	global $loguserid, $loguser;
-		
+
 	$pl = $loguser['powerlevel'];
 	if ($pl < 0) $pl = 0;
 
@@ -19,11 +19,11 @@ function makeForumListing($parent)
 							".($loguserid ? "LEFT JOIN {ignoredforums} i ON i.fid=f.id AND i.uid={0}" : "")."
 							LEFT JOIN {users} lu ON lu.id=f.lastpostuser
 						WHERE ".forumAccessControlSQL().' AND '.($parent==0 ? 'f.catid>0' : 'f.catid={1}').(($pl < 1) ? " AND f.hidden=0" : '')."
-						ORDER BY c.corder, c.id, f.forder, f.id", 
+						ORDER BY c.corder, c.id, f.forder, f.id",
 						$loguserid, -$parent);
 	if (!NumRows($rFora))
 		return;
-						
+
 	$rSubfora = Query("	SELECT f.*,
 							".($loguserid ? "(NOT ISNULL(i.fid))" : "0")." ignored,
 							(SELECT COUNT(*) FROM {threads} t".($loguserid ? " LEFT JOIN {threadsread} tr ON tr.thread=t.id AND tr.id={0}" : "")."
@@ -31,7 +31,7 @@ function makeForumListing($parent)
 						FROM {forums} f
 							".($loguserid ? "LEFT JOIN {ignoredforums} i ON i.fid=f.id AND i.uid={0}" : "")."
 						WHERE ".forumAccessControlSQL().' AND '.($parent==0 ? 'f.catid<0' : 'f.catid!={1}').(($pl < 1) ? " AND f.hidden=0" : '')."
-						ORDER BY f.forder, f.id", 
+						ORDER BY f.forder, f.id",
 						$loguserid, -$parent);
 	$subfora = array();
 	while ($sf = Fetch($rSubfora))
@@ -42,7 +42,7 @@ function makeForumListing($parent)
 	while($forum = Fetch($rFora))
 	{
 		$skipThisOne = false;
-		$bucket = "forumListMangler"; include("./lib/pluginloader.php");
+		$bucket = "forumListMangler"; include(LIBDIR . '/pluginloader.php');
 		if($skipThisOne)
 			continue;
 
@@ -74,22 +74,22 @@ function makeForumListing($parent)
 
 		if ($newstuff > 0)
 			$NewIcon = "<img src=\"".resourceLink("img/status/new.png")."\" alt=\"New!\"/>";
-			
+
 		if (isset($subfora[$forum['id']]))
 		{
 			foreach ($subfora[$forum['id']] as $subforum)
 			{
 				$link = actionLinkTag($subforum['title'], 'forum', $subforum['id']);
-				
+
 				if ($subforum['ignored'])
 					$link = '<span class="ignored">'.$link.'</span>';
 				else if ($subforum['numnew'] > 0)
 					$link = '<img src="'.resourceLink('img/status/new.png').'" alt="New!"/> '.$link;
-					
+
 				$subforaList .= $link.', ';
 			}
 		}
-			
+
 		if($subforaList)
 			$subforaList = "<br />".__("Subforums:")." ".substr($subforaList,0,-2);
 

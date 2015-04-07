@@ -40,7 +40,7 @@ function setUrlName($action, $id, $urlname)
 }
 
 if($urlRewriting)
-	include("urlrewriting.php");
+	require_once(LIBDIR . '/urlrewriting.php');
 else
 {
 
@@ -50,7 +50,7 @@ else
 		if($boardroot == "")
 			$boardroot = "./";
 
-		$bucket = "linkMangler"; include('lib/pluginloader.php');
+		$bucket = "linkMangler"; include(LIBDIR . '/pluginloader.php');
 
 		$res = "";
 
@@ -133,7 +133,7 @@ function userLink($user, $showMinipic = false, $customID = false)
 {
 	global $powerlevels;
 
-	$bucket = "userMangler"; include("./lib/pluginloader.php");
+	$bucket = "userMangler"; include(LIBDIR . '/pluginloader.php');
 
 	$fpow = $user['powerlevel'];
 	$fsex = $user['sex'];
@@ -196,7 +196,7 @@ function userLink($user, $showMinipic = false, $customID = false)
 	}
 	*/
 
-	$bucket = "userLink"; include('lib/pluginloader.php');
+	$bucket = "userLink"; include(LIBDIR . '/pluginloader.php');
 	if($user["powerlevel"])
 		$plstring = ", ".$powerlevels[$user['powerlevel']];
 	else

@@ -66,10 +66,10 @@ class Settings
 
 		//Get the setting list.
 		if($pluginname == "main")
-			include("settingsfile.php");
+			require_once(LIBDIR . '/settingsfile.php');
 		else
 		{
-			@include("./plugins/".$plugins[$pluginname]['dir']."/settingsfile.php");
+			@require_once(COMMONDIR . '/plugins/' . $plugins[$pluginname]['dir'] . '/settingsfile.php');
 		}
 		return $settings;
 	}

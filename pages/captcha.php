@@ -9,7 +9,7 @@ $ajaxPage = true;
  * and extract it into a /securimage folder.
  */
 
-include 'securimage/securimage.php';
+require_once(LIBDIR . '/securimage/securimage.php');
 
 $img = new securimage();
 
@@ -25,6 +25,6 @@ $img->num_lines = 7;
 $img->charset = 'abcdefghklmnprstuvwyz23456789';
 
 //This is basically the default setting, but in the Securimage directory instead of the board root.
-$img->ttf_file = "securimage/AHGBold.ttf";
+$img->ttf_file = LIBDIR . '/securimage/AHGBold.ttf';
 
 $img->show('');
